@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    base(href="/")
+    link(href="/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet")
+    script(src="/vendor/angular/angular.js")
+    script(src="/vendor/angular-route/angular-route.js")
+    script(src="/app.js")
+  body(ng-app="myWorld")
+    ul.nav.nav-tabs(ng-controller="NavCtrl")
+      li(ng-repeat="tab in tabs" ng-class="{active: tab.active}")
+        a(href="{{tab.path}}") {{ tab.title }}
+        
+    .container
+      h1 Hello From Jade
+        = 5*5
+      .alert.alert-success {{ 5*5 }}
+      .div(ng-view)
