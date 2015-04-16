@@ -1,8 +1,9 @@
 var express = require("express");
 var mongoose = require("mongoose");
+var bodyParser = require("body-parser");
 
 var PersonSchema = new mongoose.Schema({
-  name: String  
+  name: { type: String, unique: true, required: true }  
 });
 
 var Person = mongoose.model("Person", PersonSchema);
@@ -20,6 +21,8 @@ app.locals.pretty = true;
 app.set("view engine", "jade");
 
 app.use(express.static(__dirname + "/client"));
+
+app.use(bodyParser.json());
 
 app.use(function(req, res, next){
   req.foo = Math.random().toString();
@@ -39,6 +42,17 @@ app.get("/api/people", function(req, res){
   Person.find({}).sort("name").exec(function(err, people){
     res.send(people);
   }); 
+});
+
+app.post("/api/people", function(req, res){
+  Person.create(req.body, function(err, person){
+    if(err){
+      res.status(500).send(err); 
+    }
+    else{
+      res.send(person); 
+    }
+  });
 });
 
 

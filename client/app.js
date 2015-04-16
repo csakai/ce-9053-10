@@ -19,6 +19,30 @@ app.config(function($routeProvider, $locationProvider){
     $locationProvider.html5Mode(true);
 });
 // services
+app.factory("PeopleSvc", function($q, $http ){
+  return {
+    getPeople: function(){
+      var dfd = $q.defer();
+      $http.get("/api/people").then(function(result){
+        dfd.resolve(result.data);
+      });
+      return dfd.promise;
+    },
+    insertPerson: function(person){
+      var dfd = $q.defer();  
+      $http.post("/api/people", person).then(
+        function(result){
+          console.log(result);
+          dfd.resolve(result.data);
+        },
+        function(result){
+          dfd.reject(result.data);
+        }
+      );
+      return dfd.promise;
+    }
+  };
+});
 app.factory("NavSvc", function(){
   var _tabs = [
     {
@@ -59,9 +83,30 @@ app.controller("HomeCtrl", function($scope, NavSvc){
   $scope.message = "I am the home control"; 
 });
 
-app.controller("PeopleCtrl", function($scope, NavSvc){
+app.controller("PeopleCtrl", function($scope, NavSvc, PeopleSvc){
   NavSvc.setTab("People");
+  $scope.inserting = {};
   $scope.message = "I am the people control";
+  $scope.insert = function(){
+    PeopleSvc.insertPerson($scope.inserting).then(
+      function(person){
+        $scope.success = "Insert successful for " + person.name;
+        $scope.error = null;
+        $scope.inserting = {};
+        activate();
+      },
+      function(error){
+        $scope.error = error;
+        $scope.success = null;
+      }
+    );
+  };
+  function activate(){
+    PeopleSvc.getPeople().then(function(people){
+      $scope.people = people;
+    });
+  }
+  activate();
 });
 
 app.controller("ThingsCtrl", function($scope, NavSvc){
