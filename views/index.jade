@@ -7,12 +7,12 @@ html
     script(src="/vendor/angular-route/angular-route.js")
     script(src="/app.js")
   body(ng-app="myWorld")
-    ul.nav.nav-tabs(ng-controller="NavCtrl")
-      li(ng-repeat="tab in tabs" ng-class="{active: tab.active}")
-        a(href="{{tab.path}}") {{ tab.title }}
+    my-world-directive
         
     .container
       h1 Hello From Jade
         = 5*5
       .alert.alert-success {{ 5*5 }}
       .div(ng-view)
+      
+    my-world-directive

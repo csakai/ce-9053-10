@@ -69,4 +69,25 @@ app.controller("ThingsCtrl", function($scope, NavSvc){
   $scope.message = "I am the things control";
 });
 
+app.controller("FooCtrl", function($scope){
+  var rnd = Math.random();
+  console.log(rnd);
+  $scope.message = rnd; 
+});
+
 //directives
+app.directive("myWorldDirective", function(){
+  return {
+    restrict: "E",
+    templateUrl: "/templates/nav.html",
+    controller: "NavCtrl"
+  }
+});
+app.directive("foo", function(){
+  return {
+    restrict: "EA",
+    templateUrl: "/templates/foo.html",
+    controller: "FooCtrl",
+    scope: {}
+  }; 
+});
