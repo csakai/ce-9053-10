@@ -44,6 +44,11 @@ app.get("/api/people", function(req, res){
   }); 
 });
 
+app.delete("/api/people/:id", function(req, res){
+  Person.remove({_id: req.params.id}).exec(function(){
+    res.send({deleted: true});
+  });
+})
 app.post("/api/people", function(req, res){
   Person.create(req.body, function(err, person){
     if(err){
