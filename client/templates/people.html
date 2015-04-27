@@ -1,9 +1,9 @@
 <div class="alert alert-danger" ng-show="error">
-  {{ error }} 
+  {{ error }}
 </div>
 
 <div class="alert alert-success" ng-show="success">
-  {{ success }} 
+  {{ success }}
 </div>
 
 <form style="margin: 10px 0">
@@ -15,6 +15,6 @@
 </form>
 <ul class="list-group">
   <li class="list-group-item" ng-repeat="person in people">
-    {{ person.name }} {{ person._id}}
+    <span class="fa fa-close" style="color: red;cursor:pointer;" ng-click="remove(person._id)">REMOVE!</span> {{ person.name }} {{ person._id}}
   </li>
 </ul>

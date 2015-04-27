@@ -15,7 +15,7 @@ app.config(function($routeProvider, $locationProvider){
       controller: "ThingsCtrl",
       templateUrl: "/templates/things.html"
     });
-    
+
     $locationProvider.html5Mode(true);
 });
 // services
@@ -29,10 +29,10 @@ app.factory("PeopleSvc", function($q, $http ){
       return dfd.promise;
     },
     insertPerson: function(person){
-      var dfd = $q.defer();  
+      var dfd = $q.defer();
       $http.post("/api/people", person).then(
         function(result){
-          console.log(result);
+          console.log('from server', result);
           dfd.resolve(result.data);
         },
         function(result){
@@ -40,6 +40,16 @@ app.factory("PeopleSvc", function($q, $http ){
         }
       );
       return dfd.promise;
+    },
+    deletePerson: function(id) {
+      return $http.delete("/api/people/" + id)
+        .then(function(result) {
+          console.log(result);
+          return result.data;
+        }, function(error){
+          console.log(error);
+          return error.data;
+        });
     }
   };
 });
@@ -63,7 +73,7 @@ app.factory("NavSvc", function(){
     tabs: _tabs,
     setTab: function(title){
       _tabs.forEach(function(tab){
-        if(tab.title == title) 
+        if(tab.title == title)
           tab.active = true;
         else
           tab.active = false;
@@ -75,12 +85,12 @@ app.factory("NavSvc", function(){
 //controllers
 app.controller("NavCtrl", function($scope, NavSvc){
   $scope.tabs = NavSvc.tabs;
-  
+
 });
 app.controller("HomeCtrl", function($scope, NavSvc){
   console.log("in home control");
   NavSvc.setTab("Home");
-  $scope.message = "I am the home control"; 
+  $scope.message = "I am the home control";
 });
 
 app.controller("PeopleCtrl", function($scope, NavSvc, PeopleSvc){
@@ -90,10 +100,11 @@ app.controller("PeopleCtrl", function($scope, NavSvc, PeopleSvc){
   $scope.insert = function(){
     PeopleSvc.insertPerson($scope.inserting).then(
       function(person){
+        console.log("person insert", person);
         $scope.success = "Insert successful for " + person.name;
         $scope.error = null;
         $scope.inserting = {};
-        activate();
+        $scope.people.push(person);
       },
       function(error){
         $scope.error = error;
@@ -101,6 +112,18 @@ app.controller("PeopleCtrl", function($scope, NavSvc, PeopleSvc){
       }
     );
   };
+  $scope.remove = function(id) {
+    PeopleSvc.deletePerson(id)
+      .then(function(person) {
+        $scope.success = "Delete successful.";
+        $scope.error = null;
+        activate();
+      },
+      function(error) {
+        $scope.error = error;
+        $scope.success = null;
+    });
+  }
   function activate(){
     PeopleSvc.getPeople().then(function(people){
       $scope.people = people;
@@ -117,7 +140,7 @@ app.controller("ThingsCtrl", function($scope, NavSvc){
 app.controller("FooCtrl", function($scope){
   var rnd = Math.random();
   console.log(rnd);
-  $scope.message = rnd; 
+  $scope.message = rnd;
 });
 
 //directives
@@ -134,5 +157,5 @@ app.directive("foo", function(){
     templateUrl: "/templates/foo.html",
     controller: "FooCtrl",
     scope: {}
-  }; 
+  };
 });

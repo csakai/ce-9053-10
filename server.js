@@ -3,7 +3,7 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 
 var PersonSchema = new mongoose.Schema({
-  name: { type: String, unique: true, required: true }  
+  name: { type: String, unique: true, required: true }
 });
 
 var Person = mongoose.model("Person", PersonSchema);
@@ -41,7 +41,7 @@ paths.forEach(function(path){
 app.get("/api/people", function(req, res){
   Person.find({}).sort("name").exec(function(err, people){
     res.send(people);
-  }); 
+  });
 });
 
 app.delete("/api/people/:id", function(req, res){
@@ -52,13 +52,13 @@ app.delete("/api/people/:id", function(req, res){
 app.post("/api/people", function(req, res){
   Person.create(req.body, function(err, person){
     if(err){
-      res.status(500).send(err); 
+      res.status(500).send(err);
     }
     else{
-      res.send(person); 
+      res.send(person);
     }
   });
 });
 
 
-app.listen(process.env.PORT);
+app.listen(9000);
